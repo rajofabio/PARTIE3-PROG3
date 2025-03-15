@@ -20,4 +20,11 @@ public class IngredientTest {
 
         assertEquals(30.0, pain.getAvailableQuantity());
     }
+
+    @Test
+    void oeuf_get_price() {
+        Ingredient oeuf = subject.findById(1L);
+
+        assertEquals(1000.0, oeuf.getActualPrice());
+    }
 }
