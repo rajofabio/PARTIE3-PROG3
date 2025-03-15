@@ -76,6 +76,7 @@ public class StockMovementCrudOperations implements CrudOperations<StockMovement
     private StockMovement mapFromResultSet(ResultSet resultSet) throws SQLException {
         StockMovement stockMovement = new StockMovement();
         stockMovement.setId(resultSet.getLong("id"));
+        stockMovement.setQuantity(resultSet.getDouble("quantity"));
         stockMovement.setMovementType(StockMovementType.valueOf(resultSet.getString("movement_type")));
         stockMovement.setUnit(Unit.valueOf(resultSet.getString("unit")));
         stockMovement.setCreationDatetime(resultSet.getTimestamp("creation_datetime").toInstant());
