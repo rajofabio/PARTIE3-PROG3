@@ -12,4 +12,4 @@ public class OrderCrudOperationsTest {
         assertNotNull(order);
         assertEquals("REF123", order.getReference());
     }
-}   
+}

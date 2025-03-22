@@ -7,8 +7,8 @@ DO $$
 
 
 CREATE TABLE IF NOT EXISTS order_status (
-                                            id BIGSERIAL PRIMARY KEY, -- Identifiant unique du statut de commande
-                                            id_order BIGINT NOT NULL REFERENCES "order"(id), -- Clé étrangère vers la table Order
-                                            status order_process_status NOT NULL, -- Statut de la commande
-                                            status_datetime TIMESTAMP WITHOUT TIME ZONE NOT NULL -- Date et heure du statut
+                                            id BIGSERIAL PRIMARY KEY,
+                                            id_order BIGINT NOT NULL REFERENCES "order"(id),
+                                            status order_process_status NOT NULL,
+                                            status_datetime TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

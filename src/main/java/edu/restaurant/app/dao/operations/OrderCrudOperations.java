@@ -78,12 +78,10 @@ public class OrderCrudOperations implements CrudOperations<Order> {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, orderId);
-            statement.setString(2, newStatus.name()); // S'assure que le statut est converti correctement
+            statement.setString(2, newStatus.name());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la mise à jour du statut de la commande", e);
         }
     }
-
-
 }

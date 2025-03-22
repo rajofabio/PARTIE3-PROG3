@@ -10,7 +10,6 @@ public class OrderManagementTest {
 
     private final OrderCrudOperations orderCrudOperations = new OrderCrudOperations();
 
-    // Test 1 : Récupération d'une commande par son ID
     @Test
     public void testFindOrderById() {
         Order order = orderCrudOperations.findById(1L);
@@ -18,14 +17,13 @@ public class OrderManagementTest {
         assertEquals("REF123", order.getReference());
     }
 
-    // Test 2 : Vérification du statut actuel d'une commande
+
     @Test
     public void testGetActualStatus() {
         Order order = orderCrudOperations.findById(1L);
         assertEquals("CREATED", order.getActualStatus().toString());
     }
 
-    // Test 3 : Vérification des plats dans une commande
     @Test
     public void testGetDishOrders() {
         Order order = orderCrudOperations.findById(1L);
@@ -36,7 +34,7 @@ public class OrderManagementTest {
         assertEquals(2, order.getDishOrders().get(0).getQuantity());
     }
 
-    // Test 4 : Calcul du montant total d'une commande
+
     @Test
     public void testGetTotalAmount() {
         Order order = orderCrudOperations.findById(1L);
@@ -45,7 +43,7 @@ public class OrderManagementTest {
         assertEquals(expectedTotal, order.getTotalAmount());
     }
 
-    // Test 5 : Transition des statuts d'une commande
+
     @Test
     public void testOrderStatusTransition() {
         Order order = orderCrudOperations.findById(1L);
