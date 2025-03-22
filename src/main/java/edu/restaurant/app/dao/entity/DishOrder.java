@@ -2,6 +2,7 @@ package edu.restaurant.app.dao.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@ToString(exclude = "order")
 public class DishOrder {
     private Long id;
     private Order order;
@@ -22,4 +24,8 @@ public class DishOrder {
         this.dish = dish;
         this.quantity = quantity;
     }
+
+
+
+
 }

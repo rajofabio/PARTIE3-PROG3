@@ -5,7 +5,6 @@ import edu.restaurant.app.dao.entity.*;
 import lombok.SneakyThrows;
 
 import java.sql.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,23 +37,27 @@ public class DishOrderCrudOperations implements CrudOperations<DishOrder> {
             throw new RuntimeException(e);
         }
     }
-
     @SneakyThrows
     @Override
     public List<DishOrder> saveAll(List<DishOrder> entities) {
         List<DishOrder> dishOrders = new ArrayList<>();
+        String sql = "INSERT INTO dish_order (id_order, id_dish, quantity) VALUES (?, ?, ?)"
+                + " ON CONFLICT (id) DO UPDATE SET quantity = excluded.quantity"
+                + " RETURNING id, id_order, id_dish, quantity";
+
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO dish_order (id, id_order, id_dish, quantity) VALUES (?, ?, ?, ?)"
-                             + " ON CONFLICT (id) DO UPDATE SET id_order = excluded.id_order, id_dish = excluded.id_dish, quantity = excluded.quantity"
-                             + " RETURNING id, id_order, id_dish, quantity")) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             for (DishOrder dishOrder : entities) {
-                statement.setLong(1, dishOrder.getId());
-                statement.setLong(2, dishOrder.getOrder().getId());
-                statement.setLong(3, dishOrder.getDish().getId());
-                statement.setDouble(4, dishOrder.getQuantity());
+                if (dishOrder.getOrder() == null || dishOrder.getOrder().getId() == null) {
+                    throw new RuntimeException("DishOrder sans commande associée !");
+                }
+                statement.setLong(1, dishOrder.getOrder().getId());
+                statement.setLong(2, dishOrder.getDish().getId());
+                statement.setDouble(3, dishOrder.getQuantity());
                 statement.addBatch();
             }
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     DishOrder savedDishOrder = new DishOrder();
@@ -100,9 +103,7 @@ public class DishOrderCrudOperations implements CrudOperations<DishOrder> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Nombre de plats récupérés pour orderId=" + orderId + " : " + dishOrders.size());
         return dishOrders;
     }
-
 
 }

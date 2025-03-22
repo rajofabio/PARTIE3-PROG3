@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DishCrudOperations implements CrudOperations<Dish> {
-    private final DataSource dataSource = new DataSource();
-    private final IngredientCrudOperations ingredientCrudOperations = new IngredientCrudOperations();
+    private static final DataSource dataSource = new DataSource();
+    private static final IngredientCrudOperations ingredientCrudOperations = new IngredientCrudOperations();
 
     @Override
     public List<Dish> getAll(int page, int size) {
@@ -20,7 +20,7 @@ public class DishCrudOperations implements CrudOperations<Dish> {
     }
 
     @Override
-    public Dish findById(Long id) {
+    public  Dish findById(Long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("select d.id, d.name, d.price from dish d where id = ?")) {
             statement.setLong(1, id);
@@ -35,7 +35,7 @@ public class DishCrudOperations implements CrudOperations<Dish> {
         }
     }
 
-    private Dish mapFromResultSet(ResultSet resultSet) throws SQLException {
+    private static Dish mapFromResultSet(ResultSet resultSet) throws SQLException {
         Long idDish = resultSet.getLong("id");
 
         Dish dish = new Dish();

@@ -8,7 +8,6 @@ import java.time.Instant;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class OrderStatus {
     private Long id;
     private Order order;
@@ -16,6 +15,13 @@ public class OrderStatus {
     private Instant statusDatetime;
 
     public OrderStatus(Order order, OrderProcessStatus status, Instant statusDatetime) {
+        this.order = order;
+        this.status = status;
+        this.statusDatetime = statusDatetime;
+    }
+
+    public OrderStatus(Long id, Order order, OrderProcessStatus status, Instant statusDatetime) {
+        this.id = id;
         this.order = order;
         this.status = status;
         this.statusDatetime = statusDatetime;

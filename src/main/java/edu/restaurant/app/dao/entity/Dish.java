@@ -88,4 +88,5 @@ public class Dish {
         }
         return allQuantitiesPossible.stream().min(Double::compare).orElse(0.0);
     }
+
 }

@@ -2,12 +2,14 @@ package edu.restaurant.app.dao.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
+@ToString(exclude = {"dishOrders", "orderStatuses"})
 @Data
 @NoArgsConstructor
 public class Order {
@@ -31,7 +33,8 @@ public class Order {
 
 
     public void addDishOrder(DishOrder dishOrder) {
-        dishOrders.add(dishOrder);
+        dishOrder.setOrder(this); // 🚀 S'assurer que le DishOrder est bien lié à cette commande
+        this.dishOrders.add(dishOrder);
     }
 
 
@@ -46,6 +49,7 @@ public class Order {
                 .map(OrderStatus::getStatus)
                 .orElseThrow(() -> new IllegalStateException("Aucun statut valide trouvé pour cette commande."));
     }
+
     private void validateStatusTransition(OrderProcessStatus newStatus) {
         if (orderStatuses.isEmpty()) {
             if (newStatus != OrderProcessStatus.CREATED) {
@@ -55,6 +59,7 @@ public class Order {
         }
 
         OrderProcessStatus currentStatus = getActualStatus();
+
 
         switch (currentStatus) {
             case CREATED:
@@ -84,6 +89,25 @@ public class Order {
         }
     }
 
+    public void updateStatus(OrderProcessStatus newStatus) {
+
+        if (!isValidTransition(this.getActualStatus(), newStatus)) {
+            throw new IllegalStateException("Transition invalide de " + this.getActualStatus() + " à " + newStatus);
+        }
+        this.orderStatuses.add(new OrderStatus(this, newStatus, Instant.now()));
+    }
+
+    private boolean isValidTransition(OrderProcessStatus currentStatus, OrderProcessStatus newStatus) {
+        return switch (currentStatus) {
+            case CREATED -> newStatus == OrderProcessStatus.CONFIRMED;
+            case CONFIRMED -> newStatus == OrderProcessStatus.IN_PREPARATION;
+            case IN_PREPARATION -> newStatus == OrderProcessStatus.COMPLETED;
+            case COMPLETED -> newStatus == OrderProcessStatus.SERVED;
+            case SERVED -> false;
+        };
+    }
+
+
     public void addOrderStatus(OrderStatus orderStatus) {
         validateStatusTransition(orderStatus.getStatus());
         orderStatuses.add(orderStatus);
@@ -100,12 +124,4 @@ public class Order {
         return totalAmount;
     }
 
-
-    public void confirm() {
-        if (this.getActualStatus() != OrderProcessStatus.CREATED) {
-            throw new IllegalStateException(" Seules les commandes 'CREATED' peuvent être confirmées !");
-        }
-        this.addOrderStatus(new OrderStatus(this, OrderProcessStatus.CONFIRMED, Instant.now()));
-    }
 }
-
