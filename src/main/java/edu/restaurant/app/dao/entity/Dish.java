@@ -20,6 +20,11 @@ public class Dish {
     private List<DishIngredient> dishIngredients;
     private Double price;
 
+    public Dish(Long id) {
+
+        this.id = id;
+    }
+
     public Double getGrossMargin() {
         return getPrice() - getTotalIngredientsCost();
     }
@@ -28,13 +33,29 @@ public class Dish {
         return getPrice() - getTotalIngredientsCostAt(dateValue);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<DishIngredient> getDishIngredients() {
+        return dishIngredients;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
     public Double getTotalIngredientsCost() {
         return dishIngredients.stream()
                 .map(dishIngredient -> {
                     Double actualPrice = dishIngredient.getIngredient().getActualPrice();
                     Double requiredQuantity = dishIngredient.getRequiredQuantity();
                     return actualPrice * requiredQuantity;
-                })
+               })
                 .reduce(0.0, Double::sum);
     }
 
